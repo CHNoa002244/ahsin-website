@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="ko" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아신재단 공식 웹사이트 | AHSIN FOUNDATION</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans KR', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+KR:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #0f172a;
+        }
+
+        /* Minimalist Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Clean Corporate Public Card */
+        .public-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .public-card:hover {
+            border-color: #0f172a;
+            box-shadow: 0 12px 30px -8px rgba(15, 23, 42, 0.08);
+            transform: translateY(-2px);
+        }
+
+        /* Toast animation */
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(10px); }
+            15% { opacity: 1; transform: translateY(0); }
+            85% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+        .toast-animate {
+            animation: fadeInOut 3s forwards;
+        }
+
+        /* Dark Mode Transitions for Manager Session */
+        html.dark body {
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        html.dark header, html.dark footer {
+            background-color: #0f172a;
+            border-color: #1e293b;
+        }
+        html.dark .public-card {
+            background-color: #1e293b;
+            border-color: #334155;
+            color: #f8fafc;
+        }
+        html.dark .public-card:hover {
+            border-color: #38bdf8;
+            box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300 selection:bg-slate-900 selection:text-white dark:selection:bg-slate-100 dark:selection:text-slate-900">
+
+    <!-- Official Top Navigation Header -->
+    <header class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-30 transition-colors">
+        <!-- Utility Top Bar -->
+        <div class="border-b border-slate-100 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-950 text-[11px] text-slate-500 dark:text-slate-400 py-1.5 transition-colors">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <span><strong class="text-slate-800 dark:text-slate-200">아신재단</strong> 고객 서비스 &amp; 정보공개 포털</span>
+                    <span class="hidden sm:inline text-slate-300 dark:text-slate-700">|</span>
+                    <span class="hidden sm:inline">대표전화: 02-1588-0000</span>
+                </div>
+                <div class="flex items-center gap-3 font-medium">
+                    <!-- Admin Only Setting Button (Hidden by default) -->
+                    <button id="admin-rename-btn" onclick="openRenameModal()" class="hidden hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1">
+                        <i class="fa-solid fa-gear text-[10px]"></i> 재단명 설정
+                    </button>
+                    <span id="admin-rename-sep" class="hidden text-slate-300 dark:text-slate-700">|</span>
+                    
+                    <!-- Discreet Admin Container -->
+                    <div id="admin-badge-container" class="flex items-center gap-2">
+                        <!-- Default Subtle Access Link -->
+                        <span id="sync-status" class="text-emerald-600 dark:text-emerald-400 font-bold cursor-pointer hover:underline" onclick="openAdminLoginModal()" title="보안 연결">
+                            시스템 정상 작동 중
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Header Bar -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo & Brand Name -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <div id="header-logo-container" class="w-10 h-10 border-2 border-slate-900 dark:border-slate-100 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 flex items-center justify-center font-black text-xl rounded-md transition overflow-hidden">
+                        <i id="header-logo-icon" class="fa-solid fa-building-columns"></i>
+                        <img id="header-logo-img" src="" alt="Logo" class="hidden w-full h-full object-cover" onerror="this.classList.add('hidden'); document.getElementById('header-logo-icon').classList.remove('hidden');">
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="font-black text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white" id="header-title">
+                                아신재단
+                            </h1>
+                            <!-- Discreet Trigger on OFFICIAL badge -->
+                            <span onclick="openAdminLoginModal()" class="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 rounded cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="인증">OFFICIAL</span>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium" id="header-subtitle">AHSIN FOUNDATION PUBLIC PORTAL</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Links (Desktop) -->
+                <nav class="hidden md:flex items-center gap-8 text-xs font-bold text-slate-700 dark:text-slate-300">
+                    <a href="#about-section" class="hover:text-slate-900 dark:hover:text-white transition">재단 소개</a>
+                    <a href="#board-section" onclick="filterCategory('notice', document.getElementById('tab-notice'))" class="hover:text-slate-900 dark:hover:text-white transition">공지사항</a>
+                    <a href="#board-section" onclick="filterCategory('news', document.getElementById('tab-news'))" class="hover:text-slate-900 dark:hover:text-white transition">보도자료</a>
+                    <a href="#board-section" onclick="filterCategory('project', document.getElementById('tab-project'))" class="hover:text-slate-900 dark:hover:text-white transition">사업·연구</a>
+                    <a href="#board-section" onclick="filterCategory('inquiry', document.getElementById('tab-inquiry'))" class="hover:text-slate-900 dark:hover:text-white transition">고객센터 &amp; 게시판</a>
+                </nav>
+
+                <!-- Action Button (Visible to all users) -->
+                <div class="flex items-center gap-3">
+                    <button id="admin-write-btn" onclick="openCreateModal()" class="px-4 py-2.5 text-xs font-bold rounded-lg bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-900 transition flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <span id="write-btn-text">게시글 작성</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner Section -->
+    <section class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 py-12 sm:py-16 transition-colors" id="about-section">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl">
+                <span class="px-3 py-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-mono font-bold text-xs rounded-full inline-block mb-4 shadow-sm">
+                    투명 경영 &amp; 사회적 책임 실천
+                </span>
+                <h2 class="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-tight mb-4">
+                    더 나은 사회와 미래 가치를 창출하는 <br class="hidden sm:inline"><span class="border-b-4 border-slate-900 dark:border-slate-100" id="hero-title-display">아신재단</span> 공식 웹사이트입니다.
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium mb-6">
+                    아신재단은 투명한 경영과 지식 공유를 바탕으로 공익 사업, 연구 지원 및 사회적 가치 증진에 앞장섭니다. 재단 주요 공지사항과 사업 보고서, 고객 문의를 공식 웹사이트를 통해 편리하게 확인해 보세요.
+                </p>
+                
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-slate-200 dark:border-slate-800 text-xs">
+                    <div>
+                        <span class="block text-slate-400 dark:text-slate-500 font-mono text-[10px] uppercase">설립 목적</span>
+                        <strong class="text-slate-900 dark:text-slate-200 font-bold">공익 사업 &amp; 연구 지원</strong>
+                    </div>
+                    <div>
+                        <span class="block text-slate-400 dark:text-slate-500 font-mono text-[10px] uppercase">정보 공개</span>
+                        <strong class="text-slate-900 dark:text-slate-200 font-bold">100% 투명 공개</strong>
+                    </div>
+                    <div>
+                        <span class="block text-slate-400 dark:text-slate-500 font-mono text-[10px] uppercase">등록된 게시물</span>
+                        <strong class="text-slate-900 dark:text-slate-200 font-bold" id="hero-count-total">0 건</strong>
+                    </div>
+                    <div>
+                        <span class="block text-slate-400 dark:text-slate-500 font-mono text-[10px] uppercase">고객 센터</span>
+                        <strong class="text-slate-900 dark:text-slate-200 font-bold">평일 09:00 - 18:00</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Board Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10" id="board-section">
+        
+        <!-- Section Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+            <div>
+                <h3 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">재단 공식 게시판 &amp; 자료실</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">공지사항, 보도자료, 사업·연구 보고서 및 시민 문의글을 통합하여 제공합니다.</p>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="relative w-full md:w-80">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" id="search-input" oninput="handleSearch()" placeholder="제목, 부서, 태그, 내용 검색..." class="w-full pl-9 pr-4 py-2.5 text-xs rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 transition">
+            </div>
+        </div>
+
+        <!-- Category Filter Tabs -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-8 border-b border-slate-200 dark:border-slate-800" id="category-tabs">
+            <button id="tab-all" onclick="filterCategory('all', this)" class="cat-tab active px-4 py-2 text-xs font-bold rounded-lg border border-slate-900 dark:border-slate-100 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 whitespace-nowrap transition shadow-sm">
+                전체 보기 (<span id="count-all">0</span>)
+            </button>
+            <button id="tab-notice" onclick="filterCategory('notice', this)" class="cat-tab px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 whitespace-nowrap transition">
+                공지사항 (<span id="count-notice">0</span>)
+            </button>
+            <button id="tab-news" onclick="filterCategory('news', this)" class="cat-tab px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 whitespace-nowrap transition">
+                재단 소식 &amp; 보도자료 (<span id="count-news">0</span>)
+            </button>
+            <button id="tab-project" onclick="filterCategory('project', this)" class="cat-tab px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 whitespace-nowrap transition">
+                사업 · 연구 자료 (<span id="count-project">0</span>)
+            </button>
+            <button id="tab-inquiry" onclick="filterCategory('inquiry', this)" class="cat-tab px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 whitespace-nowrap transition">
+                고객 문의 &amp; 자유게시판 (<span id="count-inquiry">0</span>)
+            </button>
+        </div>
+
+        <!-- Dynamic Document/Post Grid -->
+        <div id="document-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Cards rendered dynamically -->
+        </div>
+
+        <!-- Clean Empty State View -->
+        <div id="empty-state" class="hidden text-center py-20 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-950 my-4">
+            <div class="w-14 h-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
+                <i class="fa-regular fa-folder-open text-xl"></i>
+            </div>
+            <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">등록된 게시글이 없습니다</h4>
+            <p id="empty-state-msg" class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">등록된 게시글이 없습니다.</p>
+        </div>
+
+    </main>
+
+    <!-- Public Post Detail View Modal -->
+    <div id="view-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5">
+        <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl w-full max-w-3xl max-h-[92vh] flex flex-col shadow-2xl relative overflow-hidden text-slate-900 dark:text-slate-100">
+            
+            <!-- Detail Header Bar -->
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-between">
+                <div class="flex items-center gap-3 font-mono text-xs">
+                    <span class="px-2.5 py-1 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold rounded" id="view-category-badge">ANNOUNCEMENT</span>
+                    <span class="text-slate-300 dark:text-slate-700">|</span>
+                    <span class="text-slate-600 dark:text-slate-400 font-medium" id="view-code">NO.001</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <!-- Admin Only Buttons (Hidden by default) -->
+                    <div id="admin-detail-actions" class="hidden flex items-center gap-2">
+                        <button onclick="editCurrentDocument()" class="px-3 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg font-bold transition flex items-center gap-1">
+                            <i class="fa-solid fa-pen-to-square"></i>수정
+                        </button>
+                        <button onclick="deleteCurrentDocument()" class="px-3 py-1.5 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded-lg font-bold transition flex items-center gap-1">
+                            <i class="fa-solid fa-trash-can"></i>삭제
+                        </button>
+                    </div>
+                    <button onclick="closeViewModal()" class="text-slate-400 hover:text-slate-900 dark:hover:text-white p-1.5 transition ml-2">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Detail Document Body -->
+            <div class="p-6 sm:p-8 overflow-y-auto space-y-6 flex-1 bg-white dark:bg-slate-900">
+                
+                <!-- Public Document Title Header -->
+                <div class="border-b border-slate-200 dark:border-slate-800 pb-5">
+                    <div class="text-[11px] font-bold text-slate-400 uppercase font-mono mb-1" id="view-level">공식 안내</div>
+                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-snug" id="view-title">게시글 제목</h1>
+                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2 font-semibold" id="view-subtitle">부제목</p>
+                    
+                    <div class="mt-4 flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/60 pt-3">
+                        <div>작성자: <strong class="text-slate-800 dark:text-slate-200" id="view-author">아신재단 홍보팀</strong></div>
+                        <div>등록일: <span id="view-date" class="font-mono">2026-09-14</span></div>
+                    </div>
+                </div>
+
+                <!-- Image Banner (if exists) -->
+                <div id="view-image-box" class="hidden w-full max-h-96 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+                    <img id="view-image" src="" alt="Post Banner" class="w-full h-full object-cover">
+                </div>
+
+                <!-- Main Content Text Area -->
+                <div class="prose prose-slate dark:prose-invert max-w-none text-xs sm:text-sm leading-relaxed text-slate-800 dark:text-slate-200 whitespace-pre-wrap font-sans bg-slate-50/50 dark:bg-slate-950/50 p-6 border border-slate-200 dark:border-slate-800 rounded-lg" id="view-content">
+                    본문 내용...
+                </div>
+
+                <!-- Tags Footer -->
+                <div class="pt-3 flex items-center justify-between text-xs">
+                    <div class="flex flex-wrap gap-1.5" id="view-tags">
+                        <!-- Tags -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Close Button -->
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex justify-end">
+                <button onclick="closeViewModal()" class="px-6 py-2 text-xs font-bold rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 transition">
+                    닫기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Create / Edit Modal -->
+    <div id="create-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5">
+        <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl w-full max-w-2xl max-h-[92vh] flex flex-col shadow-2xl relative overflow-hidden text-slate-900 dark:text-slate-100">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-between">
+                <h3 class="font-bold text-sm" id="modal-form-title">게시글 작성</h3>
+                <button onclick="closeCreateModal()" class="text-slate-400 hover:text-slate-900 dark:hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <form id="create-form" onsubmit="handleSaveDocument(event)" class="p-6 overflow-y-auto space-y-4 text-xs flex-1 bg-white dark:bg-slate-900">
+                <input type="hidden" id="edit-doc-id">
+                
+                <!-- Admin Only Fields: Document Code & Category -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 admin-only-field">
+                    <div>
+                        <label class="block font-bold mb-1">문서 번호</label>
+                        <input type="text" id="doc-code" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono">
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">카테고리</label>
+                        <select id="doc-category" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold">
+                            <option value="notice" id="opt-notice">공지사항</option>
+                            <option value="news" id="opt-news">재단 소식 &amp; 보도자료</option>
+                            <option value="project" id="opt-project">사업 · 연구 자료</option>
+                            <option value="inquiry" id="opt-inquiry">고객 문의 &amp; 자유게시판</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Admin Only Fields: Subtitle & Access Level -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 admin-only-field">
+                    <div>
+                        <label class="block font-bold mb-1">부제목 / 소제목</label>
+                        <input type="text" id="doc-subtitle" placeholder="요약 설명이나 부제목" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">공개 등급 / 수신</label>
+                        <input type="text" id="doc-level" placeholder="예: 공식 안내, 일반 공개" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+                    </div>
+                </div>
+
+                <!-- Common Field: Author Name -->
+                <div>
+                    <label class="block font-bold mb-1" id="author-label">작성자 이름</label>
+                    <input type="text" id="doc-author" required placeholder="이름 또는 닉네임을 입력하세요" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+                </div>
+
+                <!-- Common Field: Title -->
+                <div>
+                    <label class="block font-bold mb-1">제목</label>
+                    <input type="text" id="doc-title" required placeholder="게시글 제목을 입력하세요" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold">
+                </div>
+
+                <!-- Admin Only Fields: Image URL & Tags -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 admin-only-field">
+                    <div>
+                        <label class="block font-bold mb-1">대표 이미지 URL (선택)</label>
+                        <input type="url" id="doc-image" placeholder="https://..." class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">태그 (쉼표 구분)</label>
+                        <input type="text" id="doc-tags" placeholder="공지, 연구, 2026" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800">
+                    </div>
+                </div>
+
+                <!-- Common Field: Content -->
+                <div>
+                    <label class="block font-bold mb-1">본문 내용</label>
+                    <textarea id="doc-content" rows="8" required placeholder="게시글 내용을 작성하세요..." class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-sans leading-relaxed"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
+                    <button type="button" onclick="closeCreateModal()" class="px-4 py-2 font-bold rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800">
+                        취소
+                    </button>
+                    <button type="submit" class="px-5 py-2 font-bold rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800">
+                        저장하기
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Rename Foundation Modal -->
+    <div id="rename-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl w-full max-w-md p-6 shadow-2xl relative text-slate-900 dark:text-slate-100">
+            <h3 class="text-sm font-bold mb-1">재단명 / 로고 설정</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">공식 웹사이트 메인 타이틀과 로고 이미지를 변경할 수 있습니다.</p>
+            
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold mb-1">재단 명칭</label>
+                    <input type="text" id="rename-title-input" placeholder="예: 아신재단, 한국사회공헌재단" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:border-slate-900 dark:focus:border-slate-100">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">영문 / 서브 설명</label>
+                    <input type="text" id="rename-sub-input" placeholder="예: AHSIN FOUNDATION PUBLIC PORTAL" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:border-slate-900 dark:focus:border-slate-100">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">로고 이미지 설정</label>
+                    
+                    <div class="space-y-2">
+                        <!-- Direct File Upload Input -->
+                        <div class="flex items-center gap-2">
+                            <label for="rename-logo-file" class="flex-1 cursor-pointer px-3 py-2 rounded-lg border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-center text-slate-600 dark:text-slate-300 font-bold flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-cloud-arrow-up text-slate-400"></i>
+                                <span id="rename-file-label">내 PC에서 이미지 파일 선택</span>
+                            </label>
+                            <input type="file" id="rename-logo-file" accept="image/*" onchange="handleLogoFileUpload(event)" class="hidden">
+                        </div>
+
+                        <!-- Live Logo Preview & Clear Button -->
+                        <div id="logo-preview-container" class="hidden flex items-center justify-between p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+                            <div class="flex items-center gap-2">
+                                <img id="logo-preview-img" src="" alt="Preview" class="w-8 h-8 object-cover rounded border border-slate-200 dark:border-slate-700">
+                                <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400">로고 미리보기</span>
+                            </div>
+                            <button type="button" onclick="clearLogoImage()" class="text-[11px] text-rose-500 hover:underline font-bold">
+                                로고 제거 (기본 아이콘)
+                            </button>
+                        </div>
+
+                        <div class="text-[10px] text-slate-400 text-center font-mono my-1">- 또는 웹 이미지 URL 직접 입력 -</div>
+                        <input type="url" id="rename-logo-input" oninput="handleLogoUrlInput()" placeholder="https://..." class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:border-slate-900 dark:focus:border-slate-100">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 mt-5">
+                <button onclick="closeRenameModal()" class="px-4 py-2 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    취소
+                </button>
+                <button onclick="saveSiteName()" class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800">
+                    저장하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="confirm-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl w-full max-w-sm p-6 shadow-2xl relative text-slate-900 dark:text-slate-100 text-center">
+            <div class="w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-3 text-lg">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <h3 class="text-sm font-bold mb-1">게시글 삭제</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-5">정말로 이 게시글을 삭제하시겠습니까?</p>
+
+            <div class="flex justify-center gap-2">
+                <button onclick="closeConfirmModal()" class="px-4 py-2 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    취소
+                </button>
+                <button id="confirm-delete-btn" class="px-4 py-2 text-xs font-bold rounded-lg bg-rose-600 text-white hover:bg-rose-700">
+                    삭제
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Discreet Manager Authentication Modal -->
+    <div id="admin-login-modal" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl w-full max-w-sm p-6 shadow-2xl relative text-slate-900 dark:text-slate-100">
+            <div class="w-10 h-10 rounded-full bg-slate-900 dark:bg-slate-800 text-white flex items-center justify-center mb-3 text-sm">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h3 class="text-sm font-bold mb-1" id="admin-modal-title">보안 승인 코드</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4" id="admin-modal-desc">액세스 키를 입력하십시오.</p>
+
+            <!-- Login Form -->
+            <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block font-bold text-xs mb-1 text-slate-600 dark:text-slate-300">액세스 키</label>
+                    <input type="password" id="admin-password-input" required placeholder="••••••••" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 text-xs">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAdminLoginModal()" class="px-4 py-2 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                        취소
+                    </button>
+                    <button type="submit" class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800">
+                        승인
+                    </button>
+                </div>
+            </form>
+
+            <!-- Password Change Form (In Admin Mode) -->
+            <form id="admin-change-pass-form" onsubmit="handleChangePassword(event)" class="hidden space-y-3">
+                <div>
+                    <label class="block font-bold text-xs mb-1">현재 액세스 키</label>
+                    <input type="password" id="admin-current-pass-input" required placeholder="••••••••" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 text-xs">
+                </div>
+                <div>
+                    <label class="block font-bold text-xs mb-1">새 액세스 키</label>
+                    <input type="password" id="admin-new-pass-input" required placeholder="변경할 암호 입력 (4자리 이상)" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:border-slate-900 dark:focus:border-slate-100 text-xs">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAdminLoginModal()" class="px-4 py-2 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                        취소
+                    </button>
+                    <button type="submit" class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800">
+                        변경 저장
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <!-- Official Footer -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 py-10 text-slate-500 dark:text-slate-400 text-xs mt-16 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800/80 pb-6">
+                <div>
+                    <div class="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-black text-base mb-1">
+                        <span id="footer-logo-container" class="inline-flex items-center justify-center w-5 h-5 rounded overflow-hidden">
+                            <i id="footer-logo-icon" class="fa-solid fa-building-columns"></i>
+                            <img id="footer-logo-img" src="" alt="Logo" class="hidden w-full h-full object-cover" onerror="this.classList.add('hidden'); document.getElementById('footer-logo-icon').classList.remove('hidden');">
+                        </span>
+                        <span id="footer-site-name">아신재단</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">투명한 사회공헌 및 미래 공익 가치 창출을 약속드립니다.</p>
+                </div>
+                <div class="flex items-center gap-6 font-semibold text-slate-600 dark:text-slate-300">
+                    <a href="#about-section" class="hover:underline">재단소개</a>
+                    <a href="#board-section" class="hover:underline">공지사항</a>
+                    <a href="#board-section" class="hover:underline">이용약관</a>
+                    <a href="#board-section" class="hover:underline">개인정보처리방침</a>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px]">
+                <div>
+                    <span>© <span id="year"></span> <strong class="text-slate-700 dark:text-slate-300" id="footer-copyright-name">아신재단</strong>. All rights reserved.</span>
+                </div>
+                <div class="flex items-center gap-4 text-slate-400 dark:text-slate-600 font-mono">
+                    <span>PUBLIC OFFICIAL PORTAL</span>
+                    <span>•</span>
+                    <!-- Faint discreet trigger in footer -->
+                    <span onclick="openAdminLoginModal()" class="cursor-pointer hover:text-slate-600 dark:hover:text-slate-400 transition" title="Secured Portal">VERIFIED WEBSITE</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase Imports & Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'ahsin-foundation-public-app';
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        let postsCollectionRef = null;
+
+        // Local State
+        let documents = [];
+        let activeCategory = 'all';
+        let searchQuery = '';
+        let currentViewingId = null;
+
+        // Manager Authentication & Branding State
+        let isAdmin = sessionStorage.getItem('ahsin_is_admin') === 'true';
+        let managerPassword = localStorage.getItem('ahsin_manager_password') || '1234';
+        let currentSiteLogo = localStorage.getItem('ahsin_site_logo') || '';
+        let pendingAction = null; // Callback after admin login
+
+        // Firebase Config
+        const firebaseConfig = typeof __firebase_config !== 'undefined' 
+            ? JSON.parse(__firebase_config) 
+            : {
+                apiKey: "AIzaSyDummyKeyForArchiveApp12345",
+                authDomain: "archive-app.firebaseapp.com",
+                projectId: "archive-app",
+                storageBucket: "archive-app.appspot.com",
+                messagingSenderId: "123456789",
+                appId: "1:123456789:web:abcdef"
+            };
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            const initAuth = async () => {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            };
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    const syncEl = document.getElementById('sync-status');
+                    if (syncEl) {
+                        syncEl.textContent = '시스템 정상 작동 중';
+                        syncEl.className = 'text-emerald-600 dark:text-emerald-400 font-bold cursor-pointer hover:underline';
+                    }
+                    subscribeToPosts();
+                } else {
+                    initAuth();
+                }
+            });
+
+        } catch (err) {
+            console.warn("Firebase offline or local mode:", err);
+            const syncEl = document.getElementById('sync-status');
+            if (syncEl) syncEl.textContent = '로컬 저장 모드';
+            render();
+        }
+
+        function updateAdminUI() {
+            const container = document.getElementById('admin-badge-container');
+            const renameBtn = document.getElementById('admin-rename-btn');
+            const renameSep = document.getElementById('admin-rename-sep');
+            const writeBtn = document.getElementById('admin-write-btn');
+            const emptyMsg = document.getElementById('empty-state-msg');
+            const detailActions = document.getElementById('admin-detail-actions');
+
+            // Write button is always accessible to everyone (visitors write to Inquiry board)
+            if (writeBtn) writeBtn.classList.remove('hidden');
+
+            if (isAdmin) {
+                // Activate Dark Mode for Manager Session
+                document.documentElement.classList.add('dark');
+
+                if (container) {
+                    container.innerHTML = `
+                        <span class="px-2 py-0.5 text-[10px] bg-slate-800 text-slate-200 border border-slate-700 rounded font-mono font-bold flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> SECURE SESSION
+                        </span>
+                        <button onclick="openAdminPasswordChangeModal()" class="text-xs text-slate-300 hover:text-white font-bold flex items-center gap-1 transition">
+                            <i class="fa-solid fa-key text-[10px]"></i> 키 변경
+                        </button>
+                        <span class="text-slate-700">|</span>
+                        <button onclick="adminLogout()" class="text-xs text-rose-400 hover:underline font-bold transition">
+                            종료
+                        </button>
+                    `;
+                }
+                if (renameBtn) renameBtn.classList.remove('hidden');
+                if (renameSep) renameSep.classList.remove('hidden');
+                if (detailActions) detailActions.classList.remove('hidden');
+                if (emptyMsg) emptyMsg.textContent = '관리자 세션 활성화 중입니다. 신규 게시글을 등록해 보세요.';
+            } else {
+                // Revert to Clean Light Mode
+                document.documentElement.classList.remove('dark');
+
+                if (container) {
+                    container.innerHTML = `
+                        <span id="sync-status" class="text-emerald-600 dark:text-emerald-400 font-bold cursor-pointer hover:underline" onclick="openAdminLoginModal()" title="보안 연결">
+                            시스템 정상 작동 중
+                        </span>
+                    `;
+                }
+                if (renameBtn) renameBtn.classList.add('hidden');
+                if (renameSep) renameSep.classList.add('hidden');
+                if (detailActions) detailActions.classList.add('hidden');
+                if (emptyMsg) emptyMsg.textContent = '등록된 게시글이 없습니다. 첫 고객 문의글이나 자유 게시글을 등록해 보세요.';
+            }
+        }
+
+        // Initialize UI Auth status
+        updateAdminUI();
+
+        window.openAdminLoginModal = function(onSuccessCallback = null) {
+            pendingAction = onSuccessCallback;
+            document.getElementById('admin-password-input').value = '';
+            document.getElementById('admin-login-form').classList.remove('hidden');
+            document.getElementById('admin-change-pass-form').classList.add('hidden');
+
+            document.getElementById('admin-modal-title').textContent = '보안 승인 코드';
+            document.getElementById('admin-modal-desc').textContent = '액세스 키를 입력하십시오.';
+            document.getElementById('admin-login-modal').classList.remove('hidden');
+        };
+
+        window.openAdminPasswordChangeModal = function() {
+            document.getElementById('admin-current-pass-input').value = '';
+            document.getElementById('admin-new-pass-input').value = '';
+            document.getElementById('admin-login-form').classList.add('hidden');
+            document.getElementById('admin-change-pass-form').classList.remove('hidden');
+
+            document.getElementById('admin-modal-title').textContent = '액세스 키 변경';
+            document.getElementById('admin-modal-desc').textContent = '관리자 세션에서 사용할 새로운 키를 지정합니다.';
+            document.getElementById('admin-login-modal').classList.remove('hidden');
+        };
+
+        window.closeAdminLoginModal = function() {
+            document.getElementById('admin-login-modal').classList.add('hidden');
+            pendingAction = null;
+        };
+
+        window.handleAdminLogin = function(e) {
+            e.preventDefault();
+            const inputPass = document.getElementById('admin-password-input').value.trim();
+
+            if (inputPass === managerPassword) {
+                isAdmin = true;
+                sessionStorage.setItem('ahsin_is_admin', 'true');
+                updateAdminUI();
+                showToast('보안 승인 완료. 내부 관리 세션 전환');
+                closeAdminLoginModal();
+
+                if (typeof pendingAction === 'function') {
+                    const action = pendingAction;
+                    pendingAction = null;
+                    action();
+                }
+            } else {
+                showToast('승인 코드가 일치하지 않습니다.');
+            }
+        };
+
+        window.handleChangePassword = function(e) {
+            e.preventDefault();
+            const currentPass = document.getElementById('admin-current-pass-input').value.trim();
+            const newPass = document.getElementById('admin-new-pass-input').value.trim();
+
+            if (currentPass !== managerPassword) {
+                showToast('현재 키가 올바르지 않습니다.');
+                return;
+            }
+
+            if (newPass.length < 4) {
+                showToast('새 키는 최소 4자리 이상이어야 합니다.');
+                return;
+            }
+
+            managerPassword = newPass;
+            localStorage.setItem('ahsin_manager_password', newPass);
+            showToast('액세스 키가 변경되었습니다.');
+            closeAdminLoginModal();
+        };
+
+        window.adminLogout = function() {
+            isAdmin = false;
+            sessionStorage.removeItem('ahsin_is_admin');
+            updateAdminUI();
+            showToast('관리자 세션이 종료되었습니다.');
+        };
+
+        function requireAdmin(action) {
+            if (isAdmin) {
+                action();
+            } else {
+                openAdminLoginModal(action);
+            }
+        }
+
+        function subscribeToPosts() {
+            if (!db || !currentUser) return;
+
+            postsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
+
+            onSnapshot(postsCollectionRef, (snapshot) => {
+                const fetchedDocs = [];
+                snapshot.forEach(docSnap => {
+                    fetchedDocs.push({
+                        id: docSnap.id,
+                        ...docSnap.data()
+                    });
+                });
+
+                fetchedDocs.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                documents = fetchedDocs;
+                render();
+            }, (error) => {
+                console.error("Firestore error:", error);
+                const syncEl = document.getElementById('sync-status');
+                if (syncEl) syncEl.textContent = '동기화 연결 오류';
+            });
+        }
+
+        window.render = function() {
+            const grid = document.getElementById('document-grid');
+            const emptyState = document.getElementById('empty-state');
+            grid.innerHTML = '';
+
+            const filtered = documents.filter(docItem => {
+                const matchesCategory = (activeCategory === 'all') || (docItem.category === activeCategory);
+                const q = searchQuery.toLowerCase().trim();
+                const matchesSearch = !q || 
+                    (docItem.title && docItem.title.toLowerCase().includes(q)) || 
+                    (docItem.code && docItem.code.toLowerCase().includes(q)) || 
+                    (docItem.subtitle && docItem.subtitle.toLowerCase().includes(q)) ||
+                    (docItem.author && docItem.author.toLowerCase().includes(q)) ||
+                    (docItem.content && docItem.content.toLowerCase().includes(q)) ||
+                    (docItem.tags && docItem.tags.some(t => t.toLowerCase().includes(q)));
+
+                return matchesCategory && matchesSearch;
+            });
+
+            // Update Counts
+            document.getElementById('count-all').textContent = documents.length;
+            document.getElementById('count-notice').textContent = documents.filter(d => d.category === 'notice').length;
+            document.getElementById('count-news').textContent = documents.filter(d => d.category === 'news').length;
+            document.getElementById('count-project').textContent = documents.filter(d => d.category === 'project').length;
+            document.getElementById('count-inquiry').textContent = documents.filter(d => d.category === 'inquiry').length;
+            document.getElementById('hero-count-total').textContent = documents.length + ' 건';
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                filtered.forEach(docItem => {
+                    grid.appendChild(createCardElement(docItem));
+                });
+            }
+        };
+
+        function createCardElement(docItem) {
+            const card = document.createElement('div');
+            card.className = 'public-card rounded-xl p-5 flex flex-col justify-between cursor-pointer group';
+            card.onclick = () => openViewModal(docItem.id);
+
+            const categoryLabels = {
+                notice: '공지사항',
+                news: '재단 소식 · 보도자료',
+                project: '사업 · 연구 자료',
+                inquiry: '고객 문의 · 자유게시판'
+            };
+
+            const categoryBadgeColors = {
+                notice: 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900',
+                news: 'bg-blue-900 text-white dark:bg-blue-800 dark:text-slate-100',
+                project: 'bg-emerald-900 text-white dark:bg-emerald-800 dark:text-slate-100',
+                inquiry: 'bg-slate-700 text-white dark:bg-slate-800 dark:text-slate-200'
+            };
+
+            const imageHTML = docItem.image ? `
+                <div class="w-full h-40 rounded-lg overflow-hidden mb-4 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+                    <img src="${escapeHtml(docItem.image)}" alt="Cover" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.parentElement.style.display='none'">
+                </div>
+            ` : '';
+
+            card.innerHTML = `
+                <div>
+                    <div class="flex items-center justify-between mb-3 text-xs">
+                        <span class="px-2.5 py-0.5 text-[10px] font-bold rounded-md ${categoryBadgeColors[docItem.category] || 'bg-slate-900 text-white'}">
+                            ${categoryLabels[docItem.category] || '공지'}
+                        </span>
+                        <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500 font-semibold">
+                            ${escapeHtml(docItem.code || 'NO.000')}
+                        </span>
+                    </div>
+
+                    ${imageHTML}
+
+                    <h2 class="text-base font-black text-slate-900 dark:text-white mb-1 group-hover:text-blue-600 dark:group-hover:text-sky-400 transition leading-snug">
+                        ${escapeHtml(docItem.title)}
+                    </h2>
+                    ${docItem.subtitle ? `<p class="text-xs text-slate-500 dark:text-slate-400 mb-3 font-medium line-clamp-2">${escapeHtml(docItem.subtitle)}</p>` : ''}
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+                    <span>작성자: <strong class="text-slate-700 dark:text-slate-300">${escapeHtml(docItem.author || '아신재단')}</strong></span>
+                    <span class="font-mono text-[10px] text-slate-400 dark:text-slate-500">${escapeHtml(docItem.date || '')}</span>
+                </div>
+            `;
+            return card;
+        }
+
+        window.filterCategory = function(cat, element) {
+            activeCategory = cat;
+            document.querySelectorAll('.cat-tab').forEach(t => {
+                t.className = 'cat-tab px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 whitespace-nowrap transition';
+            });
+            if (element) {
+                element.className = 'cat-tab active px-4 py-2 text-xs font-bold rounded-lg border border-slate-900 dark:border-slate-100 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 whitespace-nowrap transition shadow-sm';
+            }
+            render();
+        };
+
+        window.handleSearch = function() {
+            searchQuery = document.getElementById('search-input').value;
+            render();
+        };
+
+        window.openCreateModal = function(editDoc = null) {
+            if (editDoc && !isAdmin) {
+                requireAdmin(() => openCreateModal(editDoc));
+                return;
+            }
+
+            const form = document.getElementById('create-form');
+            form.reset();
+
+            const adminFields = document.querySelectorAll('.admin-only-field');
+            const authorLabel = document.getElementById('author-label');
+            const authorInput = document.getElementById('doc-author');
+
+            if (!isAdmin) {
+                // Hide complex admin fields for general visitors
+                adminFields.forEach(el => el.classList.add('hidden'));
+
+                if (authorLabel) authorLabel.textContent = '작성자 이름';
+                if (authorInput) authorInput.placeholder = '이름 또는 닉네임을 입력하세요';
+
+                document.getElementById('modal-form-title').textContent = '고객 문의 & 게시글 작성';
+                document.getElementById('edit-doc-id').value = '';
+                document.getElementById('doc-code').value = 'NO.' + Math.floor(1000 + Math.random() * 9000);
+                document.getElementById('doc-category').value = 'inquiry';
+                document.getElementById('doc-level').value = '고객 문의';
+                document.getElementById('doc-subtitle').value = '';
+                document.getElementById('doc-image').value = '';
+                document.getElementById('doc-tags').value = '';
+            } else {
+                // Show full administrative fields for admins
+                adminFields.forEach(el => el.classList.remove('hidden'));
+
+                if (authorLabel) authorLabel.textContent = '작성자 / 담당 부서';
+                if (authorInput) authorInput.placeholder = '예: 아신재단 홍보팀, 기획운영처';
+
+                if (editDoc) {
+                    document.getElementById('modal-form-title').textContent = '게시글 수정';
+                    document.getElementById('edit-doc-id').value = editDoc.id;
+                    document.getElementById('doc-code').value = editDoc.code || '';
+                    document.getElementById('doc-category').value = editDoc.category || 'notice';
+                    document.getElementById('doc-title').value = editDoc.title || '';
+                    document.getElementById('doc-subtitle').value = editDoc.subtitle || '';
+                    document.getElementById('doc-level').value = editDoc.level || '공식 안내';
+                    document.getElementById('doc-author').value = editDoc.author || '';
+                    document.getElementById('doc-image').value = editDoc.image || '';
+                    document.getElementById('doc-tags').value = (editDoc.tags || []).join(', ');
+                    document.getElementById('doc-content').value = editDoc.content || '';
+                } else {
+                    document.getElementById('modal-form-title').textContent = '공식 게시글 작성 (관리자)';
+                    document.getElementById('edit-doc-id').value = '';
+                    document.getElementById('doc-code').value = 'NO.' + Math.floor(1000 + Math.random() * 9000);
+                    document.getElementById('doc-category').value = 'notice';
+                    document.getElementById('doc-level').value = '공식 안내';
+                    document.getElementById('doc-author').value = '아신재단';
+                    document.getElementById('doc-subtitle').value = '';
+                    document.getElementById('doc-image').value = '';
+                    document.getElementById('doc-tags').value = '';
+                }
+            }
+
+            document.getElementById('create-modal').classList.remove('hidden');
+        };
+
+        window.closeCreateModal = function() {
+            document.getElementById('create-modal').classList.add('hidden');
+        };
+
+        window.handleSaveDocument = async function(e) {
+            e.preventDefault();
+
+            const editId = document.getElementById('edit-doc-id').value;
+            const code = document.getElementById('doc-code').value || ('NO.' + Math.floor(1000 + Math.random() * 9000));
+            const category = isAdmin ? document.getElementById('doc-category').value : 'inquiry';
+            const title = document.getElementById('doc-title').value.trim();
+            const subtitle = isAdmin ? document.getElementById('doc-subtitle').value.trim() : '';
+            const level = isAdmin ? (document.getElementById('doc-level').value || '공식 안내') : '고객 문의';
+            const author = document.getElementById('doc-author').value.trim() || (isAdmin ? '아신재단' : '익명 고객');
+            const image = isAdmin ? document.getElementById('doc-image').value.trim() : '';
+            const tagsRaw = isAdmin ? document.getElementById('doc-tags').value.trim() : '';
+            const content = document.getElementById('doc-content').value.trim();
+
+            if (!isAdmin && editId) {
+                showToast('게시글 수정 권한이 없습니다.');
+                return;
+            }
+
+            const defaultTag = isAdmin ? '아신재단' : '고객문의';
+            const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [defaultTag];
+            const today = new Date().toISOString().split('T')[0];
+
+            const postData = {
+                code,
+                category,
+                title,
+                subtitle,
+                level,
+                author,
+                image,
+                tags,
+                content,
+                date: today,
+                createdAt: Date.now()
+            };
+
+            if (db && currentUser) {
+                try {
+                    const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
+                    if (editId) {
+                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', editId);
+                        await updateDoc(docRef, postData);
+                        showToast('게시글이 수정되었습니다.');
+                    } else {
+                        await addDoc(colRef, postData);
+                        showToast('게시글이 등록되었습니다.');
+                    }
+                } catch (err) {
+                    console.error("Save doc error:", err);
+                    showToast('저장 중 오류가 발생했습니다.');
+                }
+            } else {
+                if (editId) {
+                    const idx = documents.findIndex(d => d.id === editId);
+                    if (idx !== -1) documents[idx] = { id: editId, ...postData };
+                } else {
+                    documents.unshift({ id: 'local-' + Date.now(), ...postData });
+                }
+                render();
+                showToast('게시글이 등록되었습니다.');
+            }
+
+            closeCreateModal();
+            closeViewModal();
+        };
+
+        window.openViewModal = function(id) {
+            const docItem = documents.find(d => d.id === id);
+            if (!docItem) return;
+            currentViewingId = id;
+
+            updateAdminUI();
+
+            document.getElementById('view-code').textContent = docItem.code || 'NO.000';
+            document.getElementById('view-level').textContent = docItem.level || '공식 안내';
+            document.getElementById('view-title').textContent = docItem.title;
+            document.getElementById('view-subtitle').textContent = docItem.subtitle || '';
+            
+            const categoryLabels = {
+                notice: 'NOTICE',
+                news: 'NEWS & PRESS',
+                project: 'PROJECT & RESEARCH',
+                inquiry: 'CUSTOMER INQUIRY'
+            };
+            document.getElementById('view-category-badge').textContent = categoryLabels[docItem.category] || 'POST';
+            
+            document.getElementById('view-content').textContent = docItem.content;
+            document.getElementById('view-author').textContent = docItem.author || '아신재단';
+            document.getElementById('view-date').textContent = docItem.date || '';
+
+            const imgBox = document.getElementById('view-image-box');
+            const imgEl = document.getElementById('view-image');
+            if (docItem.image) {
+                imgEl.src = docItem.image;
+                imgBox.classList.remove('hidden');
+            } else {
+                imgBox.classList.add('hidden');
+            }
+
+            const tagsBox = document.getElementById('view-tags');
+            tagsBox.innerHTML = (docItem.tags || []).map(t => `
+                <span class="px-2.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-bold">#${escapeHtml(t)}</span>
+            `).join('');
+
+            document.getElementById('view-modal').classList.remove('hidden');
+        };
+
+        window.closeViewModal = function() {
+            document.getElementById('view-modal').classList.add('hidden');
+            currentViewingId = null;
+        };
+
+        window.editCurrentDocument = function() {
+            if (!currentViewingId) return;
+            requireAdmin(() => {
+                const docItem = documents.find(d => d.id === currentViewingId);
+                if (docItem) {
+                    openCreateModal(docItem);
+                }
+            });
+        };
+
+        window.deleteCurrentDocument = function() {
+            if (!currentViewingId) return;
+            requireAdmin(() => {
+                document.getElementById('confirm-modal').classList.remove('hidden');
+                document.getElementById('confirm-delete-btn').onclick = async function() {
+                    if (db && currentUser && currentViewingId) {
+                        try {
+                            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', currentViewingId);
+                            await deleteDoc(docRef);
+                            showToast('게시글이 삭제되었습니다.');
+                        } catch (err) {
+                            console.error("Delete doc error:", err);
+                        }
+                    } else {
+                        documents = documents.filter(d => d.id !== currentViewingId);
+                        render();
+                        showToast('게시글이 삭제되었습니다.');
+                    }
+                    closeConfirmModal();
+                    closeViewModal();
+                };
+            });
+        };
+
+        window.closeConfirmModal = function() {
+            document.getElementById('confirm-modal').classList.add('hidden');
+        };
+
+        window.openRenameModal = function() {
+            requireAdmin(() => {
+                const currentTitle = document.getElementById('header-title').innerText.trim();
+                const currentSub = document.getElementById('header-subtitle').innerText;
+                document.getElementById('rename-title-input').value = currentTitle;
+                document.getElementById('rename-sub-input').value = currentSub;
+                document.getElementById('rename-logo-input').value = currentSiteLogo;
+                document.getElementById('rename-logo-file').value = '';
+                document.getElementById('rename-file-label').textContent = '내 PC에서 이미지 파일 선택';
+                updateLogoPreview(currentSiteLogo);
+                document.getElementById('rename-modal').classList.remove('hidden');
+            });
+        };
+
+        window.handleLogoFileUpload = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast('이미지 파일만 선택 가능합니다.');
+                return;
+            }
+
+            if (file.size > 3 * 1024 * 1024) {
+                showToast('이미지 크기가 3MB 이하인 파일을 사용해 주세요.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const dataUrl = event.target.result;
+                document.getElementById('rename-logo-input').value = dataUrl;
+                updateLogoPreview(dataUrl);
+                document.getElementById('rename-file-label').textContent = file.name;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.handleLogoUrlInput = function() {
+            const url = document.getElementById('rename-logo-input').value.trim();
+            updateLogoPreview(url);
+        };
+
+        window.clearLogoImage = function() {
+            document.getElementById('rename-logo-input').value = '';
+            document.getElementById('rename-logo-file').value = '';
+            document.getElementById('rename-file-label').textContent = '내 PC에서 이미지 파일 선택';
+            updateLogoPreview('');
+        };
+
+        function updateLogoPreview(src) {
+            const container = document.getElementById('logo-preview-container');
+            const img = document.getElementById('logo-preview-img');
+            if (src) {
+                img.src = src;
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        window.closeRenameModal = function() {
+            document.getElementById('rename-modal').classList.add('hidden');
+        };
+
+        window.saveSiteName = function() {
+            if (!isAdmin) {
+                showToast('관리자 권한이 필요합니다.');
+                return;
+            }
+            const newTitle = document.getElementById('rename-title-input').value.trim() || '아신재단';
+            const newSub = document.getElementById('rename-sub-input').value.trim() || 'AHSIN FOUNDATION PUBLIC PORTAL';
+            const newLogo = document.getElementById('rename-logo-input').value.trim();
+
+            currentSiteLogo = newLogo;
+            localStorage.setItem('ahsin_site_logo', newLogo);
+            localStorage.setItem('ahsin_site_title', newTitle);
+            localStorage.setItem('ahsin_site_subtitle', newSub);
+
+            applySiteBranding(newTitle, newSub, newLogo);
+
+            closeRenameModal();
+            showToast('웹사이트 정보 및 로고가 변경되었습니다.');
+        };
+
+        function applySiteBranding(title, sub, logoUrl) {
+            document.getElementById('header-title').textContent = title;
+            document.getElementById('header-subtitle').textContent = sub;
+            document.getElementById('hero-title-display').textContent = title;
+            document.getElementById('footer-site-name').textContent = title;
+            document.getElementById('footer-copyright-name').textContent = title;
+
+            const headerIcon = document.getElementById('header-logo-icon');
+            const headerImg = document.getElementById('header-logo-img');
+            const footerIcon = document.getElementById('footer-logo-icon');
+            const footerImg = document.getElementById('footer-logo-img');
+
+            if (logoUrl) {
+                if (headerIcon) headerIcon.classList.add('hidden');
+                if (headerImg) {
+                    headerImg.src = logoUrl;
+                    headerImg.classList.remove('hidden');
+                }
+                if (footerIcon) footerIcon.classList.add('hidden');
+                if (footerImg) {
+                    footerImg.src = logoUrl;
+                    footerImg.classList.remove('hidden');
+                }
+            } else {
+                if (headerIcon) headerIcon.classList.remove('hidden');
+                if (headerImg) headerImg.classList.add('hidden');
+                if (footerIcon) footerIcon.classList.remove('hidden');
+                if (footerImg) footerImg.classList.add('hidden');
+            }
+        }
+
+        // Apply initial saved branding
+        const savedTitle = localStorage.getItem('ahsin_site_title') || '아신재단';
+        const savedSub = localStorage.getItem('ahsin_site_subtitle') || 'AHSIN FOUNDATION PUBLIC PORTAL';
+        const savedLogo = localStorage.getItem('ahsin_site_logo') || '';
+        applySiteBranding(savedTitle, savedSub, savedLogo);
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold px-4 py-2.5 rounded-lg shadow-xl toast-animate flex items-center gap-2';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 dark:text-emerald-600"></i> ${escapeHtml(message)}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
